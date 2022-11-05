@@ -16,6 +16,7 @@ from pockets import camel, uncamel, collect_subclasses
 from pockets.autolog import log
 from sqlalchemy.ext import declarative
 from sqlalchemy.orm import configure_mappers, sessionmaker, Query
+from sqlalchemy.orm.decl_base import _declarative_constructor
 
 from residue._version import __version__  # noqa: F401
 from residue.crud.api import make_crud_api
@@ -82,12 +83,6 @@ default_naming_convention = {
     'pk': 'pk_%(table_name)s'}
 
 
-# SQLAlchemy doesn't expose its default constructor as a nicely importable
-# function, so we grab it from the function defaults.
-_spec_args, _spec_varargs, _spec_kwargs, _spec_defaults = inspect.getargspec(declarative.declarative_base)
-declarative_base_constructor = dict(zip(reversed(_spec_args), reversed(_spec_defaults)))['constructor']
-
-
 def declarative_base(*orig_args, **orig_kwargs):
     """
     Replacement for SQLAlchemy's declarative_base, which adds these features:
@@ -113,7 +108,7 @@ def declarative_base(*orig_args, **orig_kwargs):
 
                 defer_defaults = kwargs.pop('_defer_defaults_', False)
 
-                declarative_base_constructor(self, *args, **kwargs)
+                _declarative_constructor(self, *args, **kwargs)
                 if not defer_defaults:
                     for attr, col in self.__table__.columns.items():
                         if attr not in kwargs and col.default:
