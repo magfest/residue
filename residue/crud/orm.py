@@ -9,7 +9,8 @@ import collections
 import inspect
 import re
 import uuid
-from collections import defaultdict, Mapping
+from collections import defaultdict
+from collections.abc import Mapping
 from copy import deepcopy
 from itertools import chain
 from datetime import date, datetime, time
