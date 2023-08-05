@@ -15,6 +15,7 @@ class CoerceUTF8(TypeDecorator):
     Safely coerce Python bytestrings to unicode before sending to the database.
     """
     impl = Unicode
+    cache_ok = True
 
     def process_bind_param(self, value, dialect):
         if isinstance(value, type(b'')):
@@ -31,6 +32,7 @@ class UUID(TypeDecorator):
 
     """
     impl = CHAR
+    cache_ok = True
 
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql':
@@ -58,6 +60,7 @@ class UUID(TypeDecorator):
 
 class JSON(TypeDecorator):
     impl = String
+    cache_ok = True
 
     def __init__(self, comparator=None):
         self.comparator = comparator
@@ -91,6 +94,7 @@ class JSON(TypeDecorator):
 
 class UTCDateTime(TypeDecorator):
     impl = DateTime
+    cache_ok = True
 
     def process_bind_param(self, value, engine):
         if value is not None:
